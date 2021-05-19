@@ -1,0 +1,345 @@
+MAIN PAGE
+mode:set frame:0
+mode:set colour:dark blue
+mode:set size:25
+mode:set underline:True
+mode:set alignment:top
+mode:title:WELCOME:
+Welcome to the Exoplanet Detector, this a tool that can perform automatic detection and analysis of transiting exoplanets orbiting around distant stars using data from the 
+Transiting Exoplanet Survey Satellite (TESS). This program offers two modes: Single Target mode and Multiple Targets mode. Single Target mode allows for in-depth analysis 
+of exoplanets around a single specified star, plotting relevant graphs and a 3D model of the system. Multiple Targets mode allows for quick analysis of multiple stars for the 
+mass detection of exoplanets.
+new paragraph
+new paragraph
+Both modes will calculate many parameters of the exoplanets detected, including but not limited to the exoplanets orbital period, mass, planetary radius, orbital radius and 
+whether it falls within the habitable zone of its host star. Below is a help section to hopefully answers any questions you have!
+
+__________________________________________________________________________________________________________________________
+
+mode:title:TUTORIALS:
+mode:create frame:
+__________________________________________________________________________________________________________________________
+
+mode:set colour:dark orange
+mode:title:THE BASICS::
+mode:set frame:1
+mode:set alignment:left
+mode:set size:20
+mode:create frame:THE BASICS:
+mode:set frame:0
+mode:set alignment:top
+mode:set colour:dark blue
+mode:set underline:False
+mode:title:WHAT IS TESS?:not super
+The Transiting Exoplanet Survey Satellite (TESS) is a satellite launched by NASA designed to search for planets outisde our solar system using the transit method. TESS was 
+launched on 18th April 2018 with an inital mission brief of surveying 200,000 stars over the course of two years. This prime mission ended on the 4th July 2020. TESS 
+surveys the sky by breaking it up into 24 x 96 degree sectors observing each for at least 27 days [1].
+
+mode:title:WHAT IS AN EXOPLANET?:not super
+An exoplanet refers to any planet not in our solar system or in other words orbiting around a star which is not our own.
+
+mode:title:WHAT IS THE TRANSIT METHOD?:not super
+The transit method is a way of detecting exoplanets. As exoplanets pass betweent they're host star and Earth they partially block out light from this star, in the same way the 
+moon blocks light from the sun during an eclipse, but much less severe. This small drop in light (drop in flux) can be detected [2]. We can determine many parameters of the 
+exoplanet from this simple measurement, such as its orbital period by measuring the time between the drops in flux. This method does however mean we are limited to 
+detecting exoplanets which have orbits that pass between the line of sight of their host star and Earth.
+
+mode:set colour:dark orange
+mode:set size:25
+mode:set underline:True
+mode:title:GENERAL::
+mode:set frame:1
+mode:set alignment:left
+mode:set size:20
+mode:create frame:GENERAL:
+mode:set frame:0
+mode:set alignment:top
+mode:set colour:dark blue
+mode:set underline:False
+mode:title:WHAT IS A LIGHT CURVE?:not super
+In the case of this program, light curves are graphs of visible light intensity over time for a star, this program gets this data from TESS.
+
+mode:title:WHAT IS A PERIODOGRAM?:not super
+A periodogram is an estimate of the spectral density of a signal. This allows for the periodic natural of a light curve to be determined, allowing for this program to extract the 
+transits of an exoplanet from the general signal from its host star [3].
+
+mode:title:WHAT ARE THE FFI, SPOC AND TESS-SPOC PIPELINES?:super
+TESS records data in multiple different ways the main of which being Full Frame Images (FFI), this is a picture of all the star visible in the current sector of focus, this images 
+can be cropped around a specific star to recover the flux data for only that star. FFI are taken every 30 minutes for sectors 1 - 26 and every 10 minutes for every sector afterwards [4]. 
+The Science Processing Operations Centre (SPOC) pipeline is a NASA pipeline featuring images with a 2 minute exposure [5]. These images have also been processed to remove any 
+errors caused by TESS momentum dumps and to reduce the noise from the baseline flux of the star. The Transiting Exoplanet Survey Satellite Science Processing Operation Centre 
+(TESS-SPOC) is similar to SPOC in terms of noise processing but its images have an exposure time of 10 minutes. Having a shorter exposure time leads to more data and better results 
+when looking for exoplanets so why bother with FFI? The reason is not every star has been put throught the SPOC and TESS-SPOC pipeline, therefore being able to use FFIs allows much 
+more data to be analysised. Furthermore this code was designed for FFIs and in some instances the high data count in the SPOC and TESS-SPOC pipelines lead to increased noise making
+it hard for the code to correctly pick out the transits.
+
+mode:set colour:dark orange
+mode:set size:25
+mode:set underline:True
+mode:title:HOW THIS PROGRAM WORKS::
+mode:set frame:1
+mode:set alignment:left
+mode:set size:20
+mode:create frame:HOW THIS PROGRAM WORKS:
+mode:set frame:0
+mode:set alignment:top
+mode:set colour:dark blue
+mode:set underline:False
+mode:title:HOW EXOPLANETS ARE DETECTED?:not super
+The code makes use of the Lightkurve package to download target pixel file cutouts of full frame images using the tesscut function or downloads the light curves from the SPOC 
+and TESS-SPOC pipelines, depending on which is required. For speed a data base has been created by mass downloading all stars with known transiting exoplanets obsevered
+by TESS, this data base is not needed to run the code but will cause it to run alot slower. In both single target and multiple targets mode 
+the code will download or find from the database the required star and perform analysis. The code removes anamlous results or errors caused by TESS momentum dumps from 
+the data and then searches for transits. It does this be first taking a periodogram of the whole data set to determine possible periods. The data is then flipped and the the find_peaks 
+function from the scipy package is used to find transits. The different transits are groups based on their average drop in flux in order to separate the transits of different exoplanets.
+For each possible period, the different branches and routes between the transits are searched to find the best match. These diffferent routes are compared to one another and the most 
+likely set of transit points are returned. The periodogram is then replotted over plus and minus 20% of this period. This is done as it gives a more accurate period than 
+the estimate due to the higher resolution. 
+new paragraph
+new paragraph
+To ensure that the detected exoplanet is not due errors the code folds the lightcurve about its transit points and analysis its shape to make sure it forms a smooth curve. This does not 
+mean however this code is 100% accurate, it does unfortunately make mistakes, whether it be from missing exoplanets that do exist or from false positives. This program is not 
+designed as a research level quotable source, DO NOT use it as such! This is an experiment into what can be achieved without any human input.
+
+mode:title:HOW PARAMETERS ARE CALCULATED?:not super
+This section describes how the calculated values are obtained.
+new paragraph
+new paragraph
+The orbital radius is found by rearranging Kepler's third law which states that the square of the period of any planet is proportional to the cube 
+of the semimajor axis of its orbit [6].
+
+create equation
+where G is the Gravitational constant, M is the mass of the star, P is the orbital period.
+new paragraph
+new paragraph
+The orbital velocity of the planet is determined by using the uniform circular motion equation and assumes that the planet is travelling in a perfectly circular orbit.
+
+create equation
+where P is the orbital period and a is the semi major axis of the orbit.
+new paragraph
+new paragraph
+The radius of planet is found from the square root of the drop in flux which is proportional to the ratio of the planetary radius and the radius of the star [7].
+
+create equation
+where deltaL/L is the drop in flux of the star, R* is the stellar radius.
+new paragraph
+new paragraph
+The transit duration is found using Sackett's method in 1998 [8] where the distance between the centre of the star and the planet is less than the sum of the radii of the two which
+means that the duration of the transit is equal to a fraction of the orbital period. More on this can be found on page 7-8 at https://arxiv.org/pdf/astro-ph/9811269.pdf
+
+create equation
+where R* is the stellar radius, P is the orbital period, a is the semi major axis of the orbit
+new paragraph
+new paragraph
+Planetary mass calculation stems from the law of conservation of momentum between the planet and its parent star. Using the orbital radius equation (1.1) 
+and the orbital velocity equation (1.2), an approximated value for the planetary mass is found [9], and eccentricity is introduced as the final part of the equation to account
+for the elliptical orbit as described by Kepler's first law.
+
+create equation
+where P is the orbital period, G is the gravitational constant, v* is the radial velocity of the star, M is the stellar mass, and Epsilon is the eccentricity of the orbit.
+new paragraph
+new paragraph
+Planetary density is calculated by using the mass divided volume equation where the volume is that of the planet.
+
+create equation
+where mp is the mass of the planet, and Rp is the radius of the planet.
+new paragraph
+new paragraph
+Surface gravity is found from equating Newton's Law of Universal Gravitation to Newton's second law [10].
+
+create equation
+where mp is the mass of the planet, and Rp is the radius of the planet.
+new paragraph
+new paragraph
+The surface temperature of the planet is calculated by assuming that the planet is acting as a black body and therefore, it is in an energy balance
+where the energy absorbed is equal to the energy radiated [11].
+
+create equation
+where L is the stellar luminosity, sigma is the Stefan-Boltzmann constant, and a is the semi major axis of the orbit. 
+new paragraph
+new paragraph
+The habitable zone is determined by using the proportionality between T^4 and r^-2 [12]. The upper limit uses the boiling point of water (373K) because this is the greatest distance
+away from a star where water can exist. The lower limits uses the freezing point of water (273K) because this is the shortest distance away from a star that water can exist. With these
+bounds in place, any planet located between this region will be within the habitable zone of their star.
+
+create equation
+where a is the semi major axis of the orbit T0 is the surface temperature of the planet and T is either 273K or 373K depending on the limit being calculated.
+new paragraph
+new paragraph
+All of the stellar parameters needed to perform the calculations using the equations above, have been found using the MAST portal queries and the eccentricity values have 
+been found using NASA Exoplanet archive queries.
+
+mode:title:ACKNOWLEDGEMENTS:not super
+- Us (The Project Lads): Jordan Sheridan, William Crook, Parin Vyas.
+new paragraph
+- This research made use of Lightkurve, a Python package for Kepler and TESS data analysis (Lightkurve Collaboration, 2018) [13]. 
+new paragraph
+- This research has made use of the NASA Exoplanet Archive, which is operated by the California Institute of Technology, under contract with the National Aeronautics and Space 
+Administration under the Exoplanet Exploration Program.
+new paragraph
+- This work has made use of data from the European Space Agency (ESA) mission Gaia [14], processed by the Gaia Data Processing and Analysis Consortium (DPAC [15]). 
+Funding for the DPAC has been provided by national institutions, in particular the institutions participating in the Gaia Multilateral Agreement.
+
+mode:title:REFERENCES:not super
+mode:create frame:
+mode:set frame:5
+mode:set alignment:left
+1. R. Garner. NASA [Internet]. [Last Updated 24 April 2020; cited 22 April 2021]. Available from: 
+
+mode:superlink:www.nasa.gov/content/about-tess:https://www.nasa.gov/content/about-tess
+
+mode:set frame:0
+mode:set alignment:top
+2. R. A. Freedman et. al. Universe. Ninth edition. New York. W. H. Freeman and Company. 2011.
+new paragraph
+3. A. Schuster. On the investigation of hidden periodicities with application to a supposed 26 day period of meteorological phenomena. 1898.
+new paragraph
+4. B. Dunbar. NASA [Internet]. [Last Updated 12 August 2020; cited 1 May 2021]. 
+
+mode:create frame:
+mode:set frame:6
+mode:set alignment:left
+Available from:
+
+mode:superlink:www.nasa.gov/feature/goddard2020/nasa-s-planet-hunter-completes-its-primary-mission:https://www.nasa.gov/feature/goddard2020/nasa-s-planet-hunter-completes-its-primary-mission 
+mode:set frame:0
+mode:set alignment:top
+mode:create frame:
+mode:set frame:7
+mode:set alignment:left
+5. T. Barclay. NASA [Internet]. [Last Updated 23 October 2020; cited 15 May 2021]. Available from:
+
+mode:superlink:heasarc.gsfc.nasa.gov/docs/tess/pipeline.html:https://heasarc.gsfc.nasa.gov/docs/tess/pipeline.html
+mode:set frame:0
+mode:set alignment:top
+6. Russell JL. Kepler's laws of planetary motion: 1609-1666. The British journal for the history of science. 1964 Jun 1: p2.
+new paragraph
+7. Brunsden E. How to find an Exoplanet! [Lecture]. Planetary Science. University of York. November 2019.
+new paragraph
+8. Sackett PD. Searching for unseen planets via occultation and microlensing. InPlanets outside the Solar System: theory and observations 1999 (pp. 189-228). Springer, Dordrecht.
+new paragraph
+9. Brunsden E. Characterising Exoplanets. [Lecture]. Planetary Science. University of York. November 2019.
+new paragraph
+10. Verlinde E. On the Origin of Gravity and the Laws of Newton. Journal of High Energy Physics. 2011 Apr;2011(4):p1-10.
+new paragraph
+11. Merck J. Atmospheres of the solid world II: Structure and heat transport. Planetary Geology. University of Maryland. Fall 2019.
+new paragraph
+12. Miller C. The habitable zone. [Lecture]. Astronomy 380: Life in the Universe. University of Maryland. Fall 2009.
+
+mode:create frame:
+mode:set frame:8
+mode:set alignment:left
+13. Lightkurve. [Internet]. [Last Updated 31 March 2021; cited 4 May 2021]. Available from:
+
+mode:superlink:docs.lightkurve.org/:https://docs.lightkurve.org/ 
+
+mode:set frame:0
+mode:set alignment:top
+mode:create frame:
+mode:set frame:9
+mode:set alignment:left
+14. Anon. ESA GAIA. [Internet]. [Last Updated 21 April 2021; cited 19 May 2021]. Available from:
+
+mode:superlink:www.cosmos.esa.int/web/gaia:https://www.cosmos.esa.int/web/gaia
+mode:set frame:0
+mode:set alignment:top
+mode:create frame:
+mode:set frame:10
+mode:set alignment:left
+15. Anon. ESA GAIA. [Internet]. [Last Updated [n.d]; cited 19 May 2021]. Available from:
+
+mode:superlink:www.cosmos.esa.int/web/gaia/dpac/consortium:https://www.cosmos.esa.int/web/gaia/dpac/consortium
+mode:set frame:0
+mode:set alignment:top
+
+__________________________________________________________________________________________________________________________
+
+
+
+SINGLE TARGET PAGE
+mode:set frame:0
+mode:set colour:dark blue
+mode:set size:20
+mode:set underline:True
+mode:set alignment:top
+mode:title:HOW TO::
+mode:create frame:
+mode:set alignment:left
+mode:set frame:1
+Type a star into the search box below and select which pipeline you would like to use then click run.
+
+mode:superlink:Not sure what the different pipelines are? Click here!:link0
+mode:set frame:0
+mode:set alignment:top
+mode:create frame:
+mode:create frame:
+mode:set frame:3
+mode:set alignment:left
+mode:create frame:
+mode:set frame:4
+mode:set size:16
+mode:title:CONTROLS::
+mode:set underline:False
+mode:title:                   :
+mode:set underline:True
+mode:title:GRAPHS::
+mode:set underline:False
+mode:title:                :
+mode:set frame:3
+mode:set underline:True
+mode:title:RESULTS::
+
+MULTIPLE TARGETS PAGE
+mode:set frame:0
+mode:set colour:dark blue
+mode:set size:20
+mode:set underline:True
+mode:set alignment:top
+mode:title:HOW TO::
+mode:create frame:
+mode:set frame:1
+mode:set alignment:left
+To use this mode you will either need a TESS data release which you can
+
+mode:superlink:download from here.:https://archive.stsci.edu/tess/bulk_downloads/bulk_downloads_tce.html
+You can also use your own list of stars as long as they are saved in the csv
+
+mode:set alignment:top
+mode:set frame:0
+format or as a txt file list where there is a single star for each line in the txt file. You can select which file you wish to use below. You should note that running a full TESS data release 
+can take a long time so you can specify how many of the stars you wish to analysis before running the program, type 'all' to run the whole file.
+
+mode:create frame:
+mode:create frame:
+mode:create frame:
+mode:set alignment:left
+mode:set frame:4
+Analyse how many stars:
+
+mode:set frame:0
+mode:set alignment:top
+mode:create frame:
+mode:set frame:5
+mode:set alignment:left
+mode:create frame:
+mode:superlink:Not sure what the different pipelines are? Click here!:link0
+mode:set frame:0
+mode:create frame:
+SETTINGS
+mode:set frame:0
+mode:set colour:dark blue
+mode:set size:25
+mode:set underline:True
+mode:set alignment:top
+mode:title:DATA BASE OPTIONS::
+mode:create frame:
+mode:set frame:1
+mode:set colour:dark orange
+mode:set size:20
+mode:set underline:False
+mode:create frame:Update the data base:
+mode:set colour:dark blue
+mode:set size:25
+mode:set underline:True
+
+
