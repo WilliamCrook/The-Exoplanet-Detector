@@ -3,7 +3,7 @@ This is the final BSc project for William Crook, Jordan Sheridan and Parin Vyas.
 
 To start the program run the GUI_code script.
 
-The code runs alot faster when using the database which can be downloaded from here: https://drive.google.com/drive/folders/1lvY8e2LzfF6TpgI0MNmewjanpL_3Qk2M?usp=sharing
+The code runs alot faster when using the database which can be downloaded from here: https://drive.google.com/drive/folders/1lvY8e2LzfF6TpgI0MNmewjanpL_3Qk2M?usp=sharing.
 This is a simple folder database containing all the TESS observed stars with known exoplanets around them. You can use the code without it but it will take longer as it will have to download the data directly through tesscut.
 
 For the code to work it has to be in the order presented in the github repository with the GUI_Code, Analysis_Code, Parameters_Code and Make_Model files in the same location as the Misc and Exoplanet Light Curves folders. If you are having trouble doing this you can download the full code and database bundled in the correct folder arrangement from here: https://drive.google.com/drive/folders/1P6Qzf3zG-QM-yGIHy5oxYtvOU2adyl3_?usp=sharing. If you do not want to download the Exoplanet Light Curves folder (the database) one will automatically be made for you on start up.
