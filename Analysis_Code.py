@@ -25,7 +25,7 @@ def MainProgram(Star,lc_list,DataType,mode):
         
         if DataType == 'FFI':
             BasicClean(lc.flux.value)
-            RemoveExtremeOutliers(lc.time.value,lc.flux.value,0.95)
+            RemoveExtremeOutliers(lc.time.value,lc.flux.value,0.9)
             Exclude(lc)
             xcluded = [lc.time.value[i] if exclusion[i] == True else None for i in range(len(exclusion))]
             ycluded = [lc.flux.value[i] if exclusion[i] == True else None for i in range(len(exclusion))]
@@ -911,7 +911,8 @@ def DropInFlux(lc_forfolding,start_time,Period,xfit_peaks,yfit_peaks):
             total_drops.append(consec)
             consec = []
             new_group = True          
-    
+    if len(total_drops) == 0:
+        return False, None, None
     if len(total_drops) > 1 or len(total_drops[0]) > 10:
         return False, None, None
     else:

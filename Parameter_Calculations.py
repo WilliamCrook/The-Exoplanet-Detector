@@ -59,8 +59,9 @@ def significant_figures(value,error):
             return value, None
         elif type(error) == list:
             sigfigs = min([-int(math.floor(math.log10(abs(err)))) for err in error])
-            sf_error = [round(x,sigfigs) if round(x,sigfigs) != 0 else 10**abs(sigfigs) for x in error ]
-            if sigfigs <= 0: sf_error = [int(err) if int(err) != 0 else 1 for err in sf_error]
+            sf_error = [round(error[0],sigfigs),round(error[1],sigfigs)]
+            sf_error = [int(10**-sigfigs) if x == 0 else x for x in sf_error]
+            if sigfigs <= 0: sf_error = [int(err) if int(err) != 0 else int(10**-sigfigs) for err in sf_error]
         else:
             sigfigs = - int(math.floor(math.log10(abs(error))))
             sf_error = round(error,sigfigs)
@@ -68,7 +69,30 @@ def significant_figures(value,error):
             
         sf_value = round(value,sigfigs)
         if sigfigs <= 0: sf_value = int(sf_value)
-        if sf_value == 0: sf_value = 10**abs(sigfigs)
+        if sf_value == 0: sf_value = int(10**-sigfigs)
+    
+    return sf_value, sf_error
+
+def wignificant_figures(value,error):
+    if value == 0 or error == 0:
+        sf_value = 0
+        sf_error = 0
+    else:
+        if error == None:
+            return value, None
+        elif type(error) == list:
+            sigfigs = min([-int(math.floor(math.log10(abs(err)))) for err in error])
+            sf_error = [round(error[0],sigfigs),round(error[1],sigfigs)]
+            sf_error = [int(10**-sigfigs) if x == 0 else x for x in sf_error]
+            if sigfigs <= 0: sf_error = [int(err) for err in sf_error]
+        else:
+            sigfigs = - int(math.floor(math.log10(abs(error))))
+            sf_error = round(error,sigfigs)
+            if sigfigs <= 0: sf_error = int(sf_error)
+            
+        sf_value = round(value,sigfigs)
+        if sigfigs <= 0: sf_value = int(sf_value)
+        if sf_value == 0: sf_value = int(10**-sigfigs)
     
     return sf_value, sf_error
 
@@ -218,7 +242,8 @@ def calc_density():
       p_density_err2 = p_density*np.sqrt(((3*p_radius_err)/p_radius)**(2)+(p_mass_err2/(p_mass))**(2))            #p density error   
       pdens = p_density/1000
       pdens_err1 = p_density_err1/1000 
-      pdens_err2 = p_density_err2/1000     
+      pdens_err2 = p_density_err2/1000    
+      print(pdens_err1,pdens_err2)
       rounded_pdens, errors = significant_figures(pdens, [pdens_err1,pdens_err2])
       rounded_pdens_err1 = errors[0]    
       rounded_pdens_err2 = errors[1]
@@ -306,7 +331,6 @@ def calc_grav():
           g = ((G*p_mass)/(p_radius)**(2))
           g_err1 = g*np.sqrt(((p_mass_err1/p_mass)**(2))+(((2*p_radius_err)/p_radius)**(2)))
           g_err2 = g*np.sqrt(((p_mass_err2/p_mass)**(2))+(((2*p_radius_err)/p_radius)**(2)))
-          print(g_err1,g_err2)
           rounded_g, errors = significant_figures(g, [g_err1,g_err2])
           rounded_g_err1 = errors[0]
           rounded_g_err2 = errors[1]
