@@ -24,7 +24,7 @@ def MainProgram(Star,lc_list,DataType,mode):
         exclusion = [False]*len(lc.time.value)
         
         if DataType == 'FFI':
-            CleanData(lc.flux.value)
+            BasicClean(lc.flux.value)
             RemoveExtremeOutliers(lc.time.value,lc.flux.value,0.95)
             Exclude(lc)
             xcluded = [lc.time.value[i] if exclusion[i] == True else None for i in range(len(exclusion))]
@@ -37,8 +37,8 @@ def MainProgram(Star,lc_list,DataType,mode):
             ycluded = [None]
             noisemask = 1
             new_time, new_flux, _, _ = MovingAverage(lc.time.value, 
-                                               lc.flux.value, 
-                                               5)
+                                                     lc.flux.value,
+                                                     5)
             new_errors = np.array([])
             for ind in range(0,len(lc.flux_err.value)-5,6):
                 new_errors = np.append(new_errors,np.mean(lc.flux_err.value[ind:ind+5]))
@@ -50,7 +50,7 @@ def MainProgram(Star,lc_list,DataType,mode):
             ycluded = [None]
             lc_flat = lc.flatten()
         
-        CleanData(lc_flat.flux.value)
+        BasicClean(lc_flat.flux.value)
         flattened_list.append([lightcurve[0],int(lightcurve[1]),noisemask,lc_flat,xcluded,ycluded])
        
     con_sectors =  FindConsecutive(flattened_list)
@@ -82,7 +82,7 @@ def MainProgram(Star,lc_list,DataType,mode):
             need_new_options = True
         
         xnew, ynew, peaks, _ = MovingAverage(lc_flat.time.value, 
-                                             lc_flat.flux.value,  
+                                             lc_flat.flux.value,
                                              2)
         all_peaks = CheckPeaks(xnew,ynew,peaks)
         Transits = GroupTransitPoints(ynew,xnew,all_peaks)
@@ -130,7 +130,7 @@ def MainProgram(Star,lc_list,DataType,mode):
                                                                              start_time,
                                                                              period,
                                                                              xnew[peaks],
-                                                                             ynew[peaks])                   
+                                                                             ynew[peaks])
             
             if mode == 1 and drop_in_flux != False:
                 SaveToDataFrame(mode,
@@ -153,7 +153,7 @@ def MainProgram(Star,lc_list,DataType,mode):
            
     Possible_Exoplanets = GroupExoplanets(df_list)
     results_list = AverageValues(Possible_Exoplanets, Star, mode)
-       
+   
     return Possible_Exoplanets, results_list
 
 def SaveToDataFrame(mode,period,drop_in_flux,drop_in_flux_err,lightcurves,peaks,xnew,ynew,drop_in_flux_graphs,pg):
@@ -740,7 +740,7 @@ def WithinRange(x,period):
 """EXCLUSION FUNCTIONS"""
 #---------------------------------------------------------------------------------------------------------------#
 
-def CleanData(flux):
+def BasicClean(flux):
     global noisemask, fluxstd
     flux[np.isnan(flux)] = 1
     
@@ -773,7 +773,7 @@ def Exclude(lc):
 
     if len(peaks) == 0:
         flux[exclusion] = 1
-        CleanData(flux)
+        BasicClean(flux)
         xnew, ynew, peaks, _ = MovingAverage(time, flux, 3)
     
     Transits = GroupTransitPoints(ynew, xnew, peaks)
@@ -903,6 +903,7 @@ def DropInFlux(lc_forfolding,start_time,Period,xfit_peaks,yfit_peaks):
     consec = []
     total_drops = []
     new_group = True
+    
     for ind in range(len(counts)):
         if counts[ind] != 0:
             consec.append([ind,counts[ind]])
@@ -910,7 +911,8 @@ def DropInFlux(lc_forfolding,start_time,Period,xfit_peaks,yfit_peaks):
         if (counts[ind] == 0 or ind == 18) and new_group == False:
             total_drops.append(consec)
             consec = []
-            new_group = True          
+            new_group = True 
+            
     if len(total_drops) == 0:
         return False, None, None
     if len(total_drops) > 1 or len(total_drops[0]) > 10:
@@ -994,9 +996,7 @@ def MovingAverage(time,flux,weight):
                 break
             elif flux[peak_in_time-counter] < flux[lowest_peak[1]]: 
                 lowest_peak[1] = peak_in_time-counter 
-        index = lowest_peak[(flux[lowest_peak]).argmin()]
-        refined_peaks.append(index)
-        
+        refined_peaks.append(lowest_peak[(flux[lowest_peak]).argmin()])
     
     xnew[peaks] = [x for x in time[refined_peaks]]
     ynew[peaks] = [y for y in flux[refined_peaks]]

@@ -725,7 +725,7 @@ def SaveResults(Star):
         if rerun == True and (M != None or r_star != None or v_star != None or L != None):
             CalculateParameters(Star)
             return
-            
+         
     data_frame = data_frame.append({'Star': Star,
                                     'Star Radius': r_star,
                                     'Planet Classification': p_class,

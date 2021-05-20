@@ -155,7 +155,7 @@ def RunProgram(Star,currenttype,processing):
     dfgraph = []
     folderpath = database_path+'/'+str(Star)
     GetLightcurves(Star,currenttype,folderpath,processing)
-    print(Star)
+    
     if len(lc_list) == 0:
         if runningpage == 1:
             messagebox.showwarning('Warning','There is no data available for this star.')
@@ -203,15 +203,14 @@ def RunProgram(Star,currenttype,processing):
                         error = ''
                 
                 formatted_results = formatted_results.append({'Parameter':header,
-                                                              'Value':value,
-                                                              'Error':error
+                                                              'Value':str(value),
+                                                              'Error': error
                                                             }, ignore_index=True)
             Results_list.append(formatted_results)
             
         MakeTable(Results_list[0]) 
         Final_Results = Final_Results.T
 
-        
     elif runningpage == 1:
         messagebox.showerror('Warning','Something went wrong.')
         
