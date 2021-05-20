@@ -24,8 +24,8 @@ def MainProgram(Star,lc_list,DataType,mode):
         exclusion = [False]*len(lc.time.value)
         
         if DataType == 'FFI':
-            BasicClean(lc.flux.value)
-            RemoveExtremeOutliers(lc.time.value,lc.flux.value,0.9)
+            CleanData(lc.flux.value)
+            RemoveExtremeOutliers(lc.time.value,lc.flux.value,0.95)
             Exclude(lc)
             xcluded = [lc.time.value[i] if exclusion[i] == True else None for i in range(len(exclusion))]
             ycluded = [lc.flux.value[i] if exclusion[i] == True else None for i in range(len(exclusion))]
@@ -50,7 +50,7 @@ def MainProgram(Star,lc_list,DataType,mode):
             ycluded = [None]
             lc_flat = lc.flatten()
         
-        BasicClean(lc_flat.flux.value)
+        CleanData(lc_flat.flux.value)
         flattened_list.append([lightcurve[0],int(lightcurve[1]),noisemask,lc_flat,xcluded,ycluded])
        
     con_sectors =  FindConsecutive(flattened_list)
@@ -740,7 +740,7 @@ def WithinRange(x,period):
 """EXCLUSION FUNCTIONS"""
 #---------------------------------------------------------------------------------------------------------------#
 
-def BasicClean(flux):
+def CleanData(flux):
     global noisemask, fluxstd
     flux[np.isnan(flux)] = 1
     
@@ -773,7 +773,7 @@ def Exclude(lc):
 
     if len(peaks) == 0:
         flux[exclusion] = 1
-        BasicClean(flux)
+        CleanData(flux)
         xnew, ynew, peaks, _ = MovingAverage(time, flux, 3)
     
     Transits = GroupTransitPoints(ynew, xnew, peaks)

@@ -155,7 +155,7 @@ def RunProgram(Star,currenttype,processing):
     dfgraph = []
     folderpath = database_path+'/'+str(Star)
     GetLightcurves(Star,currenttype,folderpath,processing)
-    
+    print(Star)
     if len(lc_list) == 0:
         if runningpage == 1:
             messagebox.showwarning('Warning','There is no data available for this star.')

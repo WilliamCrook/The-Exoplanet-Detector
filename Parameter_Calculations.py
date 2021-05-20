@@ -73,29 +73,6 @@ def significant_figures(value,error):
     
     return sf_value, sf_error
 
-def wignificant_figures(value,error):
-    if value == 0 or error == 0:
-        sf_value = 0
-        sf_error = 0
-    else:
-        if error == None:
-            return value, None
-        elif type(error) == list:
-            sigfigs = min([-int(math.floor(math.log10(abs(err)))) for err in error])
-            sf_error = [round(error[0],sigfigs),round(error[1],sigfigs)]
-            sf_error = [int(10**-sigfigs) if x == 0 else x for x in sf_error]
-            if sigfigs <= 0: sf_error = [int(err) for err in sf_error]
-        else:
-            sigfigs = - int(math.floor(math.log10(abs(error))))
-            sf_error = round(error,sigfigs)
-            if sigfigs <= 0: sf_error = int(sf_error)
-            
-        sf_value = round(value,sigfigs)
-        if sigfigs <= 0: sf_value = int(sf_value)
-        if sf_value == 0: sf_value = int(10**-sigfigs)
-    
-    return sf_value, sf_error
-
 #Data request
 #---------------------------------------------------#
 def mastQuery(request):
