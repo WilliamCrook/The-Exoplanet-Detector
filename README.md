@@ -1,4 +1,6 @@
 # The-Exoplanet-Detector
+Division of work: GUI_code and Analysis_code scripts written by William Crook, Parameter_Calculations written by Jordan Sheridan, and Make_Model written by Parin Vyas.
+
 This is the final BSc project for William Crook, Jordan Sheridan and Parin Vyas. University of York. 2021.
 
 To start the program run the GUI_code script.
