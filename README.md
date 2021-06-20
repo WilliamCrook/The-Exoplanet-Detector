@@ -11,9 +11,13 @@ For the code to work it has to be in the order presented in the github repositor
 WARNING: On Windows using the 3D model shifts the main thread away from the GUI resulting in the program completely closing upon closing the model.
 
 ACKNOWLEDGEMENTS:
-- This research made use of Lightkurve, a Python package for Kepler and TESS data analysis (Lightkurve Collaboration, 2018). https://docs.lightkurve.org/  
+- Acknowledgments are made to J. Sheridan and P. Vyas for the work they did for this project and to Dr E. Brunsden for their supervision.
 
-- This research has made use of the NASA Exoplanet Archive, which is operated by the California Institute of Technology, under contract with the National Aeronautics and Space 
-Administration under the Exoplanet Exploration Program.
+- This research has made use of the NASA Exoplanet Archive, which is operated by the California Institute of Technology, under contract with the National Aeronautics and Space   Administration under the Exoplanet Exploration Program.
 
-- This work has made use of data from the European Space Agency (ESA) mission Gaia https://www.cosmos.esa.int/web/gaia, processed by the Gaia Data Processing and Analysis Consortium (DPAC, https://www.cosmos.esa.int/web/gaia/dpac/consortium). Funding for the DPAC has been provided by national institutions, in particular the institutions participating in the Gaia Multilateral Agreement.
+- This research made use of Lightkurve, a Python package for Kepler and TESS data analysis (Lightkurve Collaboration, 2018). 
+
+- Based on observations made with the NASA/ESA Hubble Space Telescope, obtained from the data archive at the Space Telescope Science Institute. STScI is operated by the            Association of Universities for Research in Astronomy, Inc. under NASA contract NAS 5-26555.
+
+- This work has made use of data from the European Space Agency (ESA) mission Gaia: https://www.cosmos.esa.int/web/gaia, processed by the Gaia Data Processing and Analysis       Consortium (DPAC, https://www.cosmos.esa.int/web/gaia/dpac/consortium). Funding for the DPAC has been provided by national institutions, in particular the institutions         participating in the Gaia Multilateral Agreement.
+
